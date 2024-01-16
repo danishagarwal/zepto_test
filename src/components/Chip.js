@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import renderList from "../constants/renderList";
 
 const Chip = () => {
   const initialItems = [
@@ -16,6 +17,7 @@ const Chip = () => {
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef(null);
 
+  //Handling backspace key
   useEffect(() => {
     const handleBackspace = (e) => {
       if (e.key === "Backspace" && inputValue === "" && chips.length > 0) {
@@ -30,21 +32,27 @@ const Chip = () => {
     };
   }, [chips, inputValue, items]);
 
+  //Input Field change function
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
+
+    //Filter based on input
     const filteredItems = initialItems.filter((item) =>
       item.toLowerCase().includes(value.toLowerCase())
     );
     setItems(filteredItems);
   };
 
+  //Handle Click on suggestion
   const handleItemClick = (item) => {
+    //Add to chips & remove from suggestions
     setChips([...chips, { label: item }]);
     setItems(items.filter((i) => i !== item));
     setInputValue("");
   };
 
+  //Remove Chip
   const handleChipRemove = (chipLabel) => {
     setChips(chips.filter((chip) => chip.label !== chipLabel));
     inputRef.current.focus();
@@ -82,36 +90,17 @@ const Chip = () => {
       </div>
 
       {/* Display suggestions when there is input value */}
-      {inputValue && (
-        <ul className="mt-2">
-          {items.map((item, index) => (
-            <li
-              key={index}
-              className="hover:bg-gray-200 p-2 rounded-md cursor-pointer"
-              onClick={() => handleItemClick(item)}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
+      {inputValue && renderList(items, handleItemClick)}
 
       {/* Display full list when clicked and no input value */}
-      {showSuggestions && !inputValue && (
-        <ul className="mt-2">
-          {initialItems
-            .filter((item) => !chips.some((chip) => chip.label === item))
-            .map((item, index) => (
-              <li
-                key={index}
-                className="hover:bg-gray-200 p-2 rounded-md cursor-pointer"
-                onClick={() => handleItemClick(item)}
-              >
-                {item}
-              </li>
-            ))}
-        </ul>
-      )}
+      {showSuggestions &&
+        !inputValue &&
+        renderList(
+          initialItems.filter(
+            (item) => !chips.some((chip) => chip.label === item)
+          ),
+          handleItemClick
+        )}
     </div>
   );
 };
