@@ -1,4 +1,8 @@
 
+### Working Demo of the challenge - 
+
+https://github.com/danishagarwal/zepto_test/assets/81150631/85f6fc09-7fcd-48ff-8292-c461071f34f6
+
 
 ## Specifications
 1] When you click on the input field, a list of items will appear.
